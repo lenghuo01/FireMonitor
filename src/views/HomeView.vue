@@ -4,6 +4,7 @@ import {instance} from '@/axios.js'
 import * as echarts from 'echarts';
 import { onMounted } from 'vue';
 import { ref } from 'vue'
+import {connectWebsocket}from '@/api/websocket'
 export default {
   // `setup` 是一个特殊的钩子，专门用于组合式 API。
 
@@ -87,7 +88,8 @@ option = {
   ]
 };
 myChart.setOption(option)
-
+// websocket连接
+connectWebsocket()
 
     }) 
 const value = ref('')
