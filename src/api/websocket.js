@@ -9,7 +9,7 @@ let messageCallback = null
 function webSocketOnOpen(e) {
   console.log('与服务端连接打开->', e)
   isSuccess = true
-  // websocket.send('Hello, WebSocket!');
+   this.websocket.send('Hello');
 }
 function webSocketOnMessage(e) {
   //  console.log('来自服务端的消息->', e)
@@ -26,6 +26,7 @@ function webSocketOnError(e) {
 }
 function webSocketOnClose(e) {
   console.log('与服务端连接关闭->', e)
+
   // initWebSocket()
 }
 function initWebSocket() {
