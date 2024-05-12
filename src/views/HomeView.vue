@@ -173,7 +173,7 @@ export default {
         </div>
       </div>
       <div class="video1">
-        <!-- <img src="">http://192.168.10.104:5000/video_feed -->
+         <img src="http://192.168.10.104:5000/video_feed ">
       </div>
       <div id="main" style="height: 500px;width: 500px">
       </div>
