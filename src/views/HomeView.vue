@@ -88,7 +88,7 @@ export default {
       };
       myChart.setOption(option)
       // websocket连接
-      // connectWebsocket()
+       connectWebsocket()
 
     })
     const isOK = ref(1)

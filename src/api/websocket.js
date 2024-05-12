@@ -15,6 +15,7 @@ function webSocketOnMessage(e) {
   //  console.log('来自服务端的消息->', e)
   // 将json数据转化为对象
   messageCallback(e)
+  console.log(e)
 }
 function webSocketOnError(e) {
   console.log('与服务端连接异常->', e)
