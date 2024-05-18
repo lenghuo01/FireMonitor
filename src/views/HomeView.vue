@@ -9,12 +9,20 @@ export default {
   // `setup` 是一个特殊的钩子，专门用于组合式 API。
 
   setup() {
-    // const getVideoData = get('/helloword').then(res=>console.log(res.data))
-    // console.log(getVideoData)
     async function bu() {
       let result = await instance.get('/video_feed')
       console.log(result)
 
+    }
+
+    function setAlertState(active) {
+      var alertOverlay = document.getElementById("alertOverlay");
+      if (active) {
+        alertOverlay.classList.add("alert-active");
+      } else {
+        alertOverlay.classList.remove("alert-active");
+       
+      }
     }
     onMounted(() => {
       var chartDom = document.getElementById('main');
@@ -87,15 +95,15 @@ export default {
         ]
       };
       myChart.setOption(option)
+
       // websocket连接
-       connectWebsocket((e)=>{
-        console.log(e)
-       })
+        connectWebsocket(getMessage)
 
     })
-    const isOK = ref(1)
+    let isOK = ref(1)
     const value = ref('')
-
+    const alertOverlay = ref('')
+    alertOverlay.value = 'non'
     const options = [
       {
         value: 'Option1',
@@ -111,87 +119,102 @@ export default {
       },
 
     ]
-
+    function getMessage(e) {
+      console.log(e.data)
+      // let result = JSON.parse(e)
+      isOK.value = e.data
+      if(isOK.value == 1){
+        alertOverlay.value = 'alertOverlay'
+        setAlertState(true)
+      }else{
+        alertOverlay.value = 'non'
+      }
+    }
     // 将 ref 暴露给模板
     return {
       value,
       options,
-      isOK
+      isOK,
+      getMessage,
+      alertOverlay
     }
   }
 }
 </script>
 
 <template>
-  <div class="container">
-    <div style="display: flex;">
-      <el-select v-model="value" placeholder="Select" size="large" style="width: 240px;color: white;">
-        <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label" />
-      </el-select>
-      <div class="second1">总数</div>
-      <div class="second2">8</div>
-      <div class="second1">正常</div>
-      <div class="second2" style="color: green">8</div>
-      <div class="second1">警告</div>
-      <div class="second2" style="color: red">0</div>
-      <div class="second1">总数</div>
-      <div class="second2">8</div>
-      <div style="color: #ffffff; position: absolute; right: 10px; line-height: 40px">
-        数据更新时间:
-      </div>
-      <div v-show="isOK" class="item2"></div>
-      <div v-show="!isOK" class="item3"></div>
-      <div style="color: white">运行正常</div>
-    </div>
-    <div style="display: flex;margin-top: 50px;justify-content: space-around">
-      <div class="add">
-        <div class="table-container">
-          <table>
-            <tbody>
-              <tr>
-                <td>设备名称</td>
-                <td>{{value}}</td>
-              </tr>
-              <tr>
-                <td>设备角度</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td>设备中心距</td>
-                <td>30</td>
-              </tr>
-              <tr>
-                <td>设备地址</td>
-                <td>c11，205室</td>
-              </tr>
-              <tr>
-                <td>置信度</td>
-                <td>90%</td>
-              </tr>
-            </tbody>
-          </table>
+  <div :id="alertOverlay">
+    <div class="container">
+
+      <div style="display: flex;">
+        <el-select v-model="value" placeholder="Select" size="large" style="width: 240px;color: white;">
+          <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.label" />
+        </el-select>
+        <div class="second1">总数</div>
+        <div class="second2">8</div>
+        <div class="second1">正常</div>
+        <div class="second2" style="color: green">8</div>
+        <div class="second1">警告</div>
+        <div class="second2" style="color: red">0</div>
+        <div class="second1">总数</div>
+        <div class="second2">8</div>
+        <div style="color: #ffffff; position: absolute; right: 10px; line-height: 40px">
+          数据更新时间:
         </div>
+        <div v-show="isOK" class="item2"></div>
+        <div v-show="!isOK" class="item3"></div>
+        <div style="color: white">运行正常</div>
       </div>
-      <div class="video1">
-         <img src="http://192.168.10.109:5000/video_feed ">
-      </div>
-      <div id="main" style="height: 500px;width: 500px">
+      <div style="display: flex;margin-top: 50px;justify-content: space-around">
+        <div class="add">
+          <div class="table-container">
+            <table>
+              <tbody>
+                <tr>
+                  <td>设备名称</td>
+                  <td>{{ value }}</td>
+                </tr>
+                <tr>
+                  <td>设备角度</td>
+                  <td>10</td>
+                </tr>
+                <tr>
+                  <td>设备中心距</td>
+                  <td>30</td>
+                </tr>
+                <tr>
+                  <td>设备地址</td>
+                  <td>c11，205室</td>
+                </tr>
+                <tr>
+                  <td>置信度</td>
+                  <td>90%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="video1">
+          <img src="http://192.168.10.107:5000/video_feed ">
+        </div>
+        <div id="main" style="height: 500px;width: 500px">
+        </div>
       </div>
     </div>
   </div>
 </template>
 <style scoped>
 .container {
-  height: 100%;
-  width: 100%;
+  height: calc(100% - 20px);
+  width: calc(100% - 20px);
   padding-top: 20px;
   padding-left: 20px;
   background-color: #100c2a;
 }
 
 .video1 {
-  height: 400px;
-  width: 500px;
+  height: 500px;
+  width: 600px;
   background-color: black;
   border: 10px solid green;
 }
@@ -280,6 +303,7 @@ export default {
   animation: scale 2s infinite cubic-bezier(0, 0, 0.49, 1.02);
   animation-delay: 100ms;
 }
+
 .el-select__wrapper {
   align-items: center;
   background-color: #222436;
@@ -312,5 +336,103 @@ td {
 
 th {
   background-color: #25273a;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  pointer-events: auto;
+}
+#non{
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width:100%;
+  overflow: hidden;
+  pointer-events: auto;
+}
+
+#alertOverlay::before,
+#alertOverlay::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100%;
+  pointer-events: auto;
+}
+
+#alertOverlay>div::before,
+#alertOverlay>div::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  pointer-events: auto;
+}
+
+#alertOverlay::before {
+  background: linear-gradient(to right, red, transparent);
+  top: 0;
+  left: 0;
+  transform: rotate(0deg);
+  pointer-events: auto;
+}
+
+#alertOverlay::after {
+  background: linear-gradient(to left, red, transparent);
+  top: 0%;
+  left: 100%;
+  transform: rotate(0deg) translate(calc(-1 * 100px), 0px);
+  pointer-events: auto;
+}
+
+#alertOverlay>div::before {
+  background: linear-gradient(to top, red, transparent);
+  top: 0;
+  left: 0;
+  transform: rotate(180deg);
+  pointer-events: auto;
+}
+
+#alertOverlay>div::after {
+  background: linear-gradient(to top, red, transparent);
+  top: 100%;
+  left: 0;
+  transform: rotate(0deg) translate(0px, calc(-1 * 100px));
+  pointer-events: auto;
+}
+
+#alertOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  opacity: 1;
+  transition: opacity 0.5s;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.alert-active {
+  animation: blink 1s infinite;
+  pointer-events: auto;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }
 </style>

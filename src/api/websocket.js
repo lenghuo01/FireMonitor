@@ -1,4 +1,4 @@
-const websocketUrl = `ws://localhost:8888`
+const websocketUrl = `ws://192.168.10.107:8888`
 // 实列
 let websock = null
 let isSuccess = false
